@@ -1,31 +1,65 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Windows.Input;
+using System.Collections.ObjectModel;
 using WpfApp1.Models;
+using WpfApp1.Helpers;
+using System.Diagnostics;
 
 namespace WpfApp1.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : BaseViewModel
     {
         public ObservableCollection<Student> Students { get; set; }
-        public ObservableCollection<Question> Questions { get; set; }
-        public ObservableCollection<TestResult> TestResults { get; set; }
+        public Student SelectedStudent { get; set; }
+
+        public ICommand AddStudentCommand { get; }
+        public ICommand EditStudentCommand { get; }
+        public ICommand DeleteStudentCommand { get; }
 
         public MainViewModel()
         {
-            // Инициализация данных
             Students = new ObservableCollection<Student>
             {
                 new Student { StudentId = "12345", Group = "Группа 1", FullName = "Иванов Иван Иванович" },
-                new Student { StudentId = "54321", Group = "Группа 2", FullName = "Петров Петр Петрович" },
-                // Добавьте еще студентов
+                new Student { StudentId = "54321", Group = "Группа 2", FullName = "Петров Петр Петрович" }
             };
 
-            Questions = new ObservableCollection<Question>
+            // Лог для проверки
+            foreach (var student in Students)
             {
-                new Question { Id = 1, Type = "Один ответ", Text = "Какой цвет небо?", Option1 = "Синий", Option2 = "Зеленый", Option3 = "Красный", Option4 = "Желтый", CorrectAnswer = "Синий" },
-                // Добавьте еще вопросы
-            };
+                Debug.WriteLine($"Студент: {student.FullName}");
+            }
 
-            TestResults = new ObservableCollection<TestResult>();
+            AddStudentCommand = new RelayCommand(AddStudent);
+            EditStudentCommand = new RelayCommand(EditStudent, CanEditOrDelete);
+            DeleteStudentCommand = new RelayCommand(DeleteStudent, CanEditOrDelete);
+        }
+
+        private void AddStudent()
+        {
+            var newStudent = new Student { StudentId = "00000", Group = "Новая группа", FullName = "Новый студент" };
+            Students.Add(newStudent);
+        }
+
+        private void EditStudent()
+        {
+            if (SelectedStudent != null)
+            {
+                SelectedStudent.FullName = "Измененное имя";
+                // Здесь можно вызвать окно для редактирования
+            }
+        }
+
+        private void DeleteStudent()
+        {
+            if (SelectedStudent != null)
+            {
+                Students.Remove(SelectedStudent);
+            }
+        }
+
+        private bool CanEditOrDelete()
+        {
+            return SelectedStudent != null;
         }
     }
 }

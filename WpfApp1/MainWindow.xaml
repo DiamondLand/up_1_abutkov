@@ -6,20 +6,31 @@
         mc:Ignorable="d"
         Title="Testing App" Height="450" Width="800">
     <Grid>
+        <!-- Оборачиваем TabItem в TabControl -->
         <TabControl>
             <TabItem Header="Студенты">
-                <Grid>
-                    <!-- Сюда добавим управление студентами -->
-                </Grid>
-            </TabItem>
-            <TabItem Header="Вопросы теста">
-                <Grid>
-                    <!-- Сюда добавим управление вопросами -->
-                </Grid>
-            </TabItem>
-            <TabItem Header="Результаты тестирования">
-                <Grid>
-                    <!-- Сюда добавим управление отчетами -->
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- DataGrid для отображения студентов -->
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding Students}" AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" Margin="0,0,0,10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Номер студ. билета" Binding="{Binding StudentId}" />
+                            <DataGridTextColumn Header="Группа" Binding="{Binding Group}" />
+                            <DataGridTextColumn Header="Ф.И.О." Binding="{Binding FullName}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Кнопки для управления студентами -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Добавить" Command="{Binding AddStudentCommand}" Width="100" Margin="0,0,10,0" />
+                        <Button Content="Редактировать" Command="{Binding EditStudentCommand}" Width="100" Margin="0,0,10,0" />
+                        <Button Content="Удалить" Command="{Binding DeleteStudentCommand}" Width="100" />
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>
