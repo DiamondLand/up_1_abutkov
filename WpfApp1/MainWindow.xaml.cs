@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using WpfApp1.ViewModels;
 
 namespace WpfApp1

@@ -23,12 +23,6 @@ namespace WpfApp1.ViewModels
                 new Student { StudentId = "54321", Group = "Группа 2", FullName = "Петров Петр Петрович" }
             };
 
-            // Лог для проверки
-            foreach (var student in Students)
-            {
-                Debug.WriteLine($"Студент: {student.FullName}");
-            }
-
             AddStudentCommand = new RelayCommand(AddStudent);
             EditStudentCommand = new RelayCommand(EditStudent, CanEditOrDelete);
             DeleteStudentCommand = new RelayCommand(DeleteStudent, CanEditOrDelete);
@@ -45,7 +39,6 @@ namespace WpfApp1.ViewModels
             if (SelectedStudent != null)
             {
                 SelectedStudent.FullName = "Измененное имя";
-                // Здесь можно вызвать окно для редактирования
             }
         }
 

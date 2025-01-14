@@ -8,9 +8,9 @@ namespace WpfApp1.Helpers
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
 
-        public event EventHandler CanExecuteChanged;
+        public RelayCommand(Action execute) : this(execute, null) { }
 
-        public RelayCommand(Action execute, Func<bool> canExecute = null)
+        public RelayCommand(Action execute, Func<bool> canExecute)
         {
             _execute = execute;
             _canExecute = canExecute;
@@ -26,9 +26,10 @@ namespace WpfApp1.Helpers
             _execute();
         }
 
-        public void RaiseCanExecuteChanged()
+        public event EventHandler CanExecuteChanged
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
         }
     }
 }
