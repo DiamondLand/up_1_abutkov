@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using WpfApp1.Models;
 using WpfApp1.Helpers;
-using System.Diagnostics;
+using WpfApp1.Views;
 
 namespace WpfApp1.ViewModels
 {
@@ -14,6 +14,7 @@ namespace WpfApp1.ViewModels
         public ICommand AddStudentCommand { get; }
         public ICommand EditStudentCommand { get; }
         public ICommand DeleteStudentCommand { get; }
+        public ICommand StartTestCommand { get; }
 
         public MainViewModel()
         {
@@ -26,6 +27,15 @@ namespace WpfApp1.ViewModels
             AddStudentCommand = new RelayCommand(AddStudent);
             EditStudentCommand = new RelayCommand(EditStudent, CanEditOrDelete);
             DeleteStudentCommand = new RelayCommand(DeleteStudent, CanEditOrDelete);
+            StartTestCommand = new RelayCommand(StartTest, CanStartTest);
+        }
+
+        private void StartTest()
+        {
+            if (SelectedStudent == null) return;
+
+            var testWindow = new TestWindow(SelectedStudent.StudentId);
+            testWindow.Show();
         }
 
         private void AddStudent()
@@ -51,6 +61,11 @@ namespace WpfApp1.ViewModels
         }
 
         private bool CanEditOrDelete()
+        {
+            return SelectedStudent != null;
+        }
+
+        private bool CanStartTest()
         {
             return SelectedStudent != null;
         }

@@ -21,6 +21,7 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Пройти тест" Command="{Binding StartTestCommand}" Width="183" Margin="0,0,10,0"/>
                         <Button Content="Добавить" Command="{Binding AddStudentCommand}" Width="100" Margin="0,0,10,0" />
                         <Button Content="Редактировать" Command="{Binding EditStudentCommand}" Width="100" Margin="0,0,10,0" />
                         <Button Content="Удалить" Command="{Binding DeleteStudentCommand}" Width="100" />
@@ -28,5 +29,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
+
     </Grid>
 </Window>
