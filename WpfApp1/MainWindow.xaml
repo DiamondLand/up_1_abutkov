@@ -1,17 +1,61 @@
 ﻿<Window x:Class="WpfApp1.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Main Window" Height="450" Width="800">
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Main Window" Height="500" Width="900">
     <Grid>
-        <TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Поиск -->
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <!-- TextBox с Placeholder -->
+            <Grid Width="300" VerticalAlignment="Center">
+                <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                         VerticalAlignment="Center" />
+                <TextBlock Text="Поиск по ФИО или номеру студ. билета" 
+                           Foreground="Gray" 
+                           Margin="5,2,0,0" 
+                           IsHitTestVisible="False" 
+                           VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <!-- Если TextBox не пустой, скрываем подсказку -->
+                                <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="{x:Static sys:String.Empty}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
+            <Button Content="Поиск" Command="{Binding SearchCommand}" Width="100" Margin="10,0,0,0" />
+        </StackPanel>
+
+
+        <!-- Основное содержимое -->
+        <TabControl Grid.Row="1" Margin="10">
+            <!-- Вкладка "Студенты" -->
             <TabItem Header="Студенты">
-                <Grid Margin="10">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <DataGrid Grid.Row="0" ItemsSource="{Binding Students}" AutoGenerateColumns="False" IsReadOnly="True" 
+                    <!-- Список студентов -->
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding FilteredStudents}" AutoGenerateColumns="False" IsReadOnly="True" 
                               SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" Margin="0,0,0,10">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Номер студ. билета" Binding="{Binding StudentId}" />
@@ -20,15 +64,28 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
+                    <!-- Управляющие кнопки -->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Пройти тест" Command="{Binding StartTestCommand}" Width="183" Margin="0,0,10,0"/>
+                        <Button Content="Пройти тест" Command="{Binding StartTestCommand}" Width="183" Margin="0,0,10,0" />
                         <Button Content="Добавить" Command="{Binding AddStudentCommand}" Width="100" Margin="0,0,10,0" />
                         <Button Content="Редактировать" Command="{Binding EditStudentCommand}" Width="100" Margin="0,0,10,0" />
                         <Button Content="Удалить" Command="{Binding DeleteStudentCommand}" Width="100" />
                     </StackPanel>
                 </Grid>
             </TabItem>
-        </TabControl>
 
+            <!-- Вкладка "Результаты тестов" -->
+            <TabItem Header="Результаты тестов">
+                <DataGrid ItemsSource="{Binding SelectedStudentResults}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Дата теста" Binding="{Binding TestDate}" />
+                        <DataGridTextColumn Header="Количество вопросов" Binding="{Binding TotalQuestions}" />
+                        <DataGridTextColumn Header="Правильных ответов" Binding="{Binding CorrectAnswers}" />
+                        <DataGridTextColumn Header="Оценка" Binding="{Binding Grade}" />
+                        <DataGridTextColumn Header="Время прохождения (мин)" Binding="{Binding DurationMinutes}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
