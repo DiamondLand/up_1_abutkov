@@ -6,13 +6,13 @@ namespace WpfApp1.Views
 {
     public partial class TestWindow : Window
     {
-        public TestWindow(string studentId)
+        public TestWindow(string studentId, string FullName)
         {
             InitializeComponent();
             try
             {
                 var questions = QuestionService.GetQuestions();
-                DataContext = new TestViewModel(questions, studentId);
+                DataContext = new TestViewModel(questions, studentId, FullName);
             }
             catch (Exception ex)
             {

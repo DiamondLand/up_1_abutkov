@@ -86,7 +86,7 @@ namespace WpfApp1.ViewModels
         {
             if (SelectedStudent == null) return;
 
-            var testWindow = new TestWindow(SelectedStudent.StudentId);
+            var testWindow = new TestWindow(SelectedStudent.StudentId, SelectedStudent.FullName);
             testWindow.Show();
         }
 

@@ -13,6 +13,7 @@ public class TestViewModel : BaseViewModel
     private int _correctAnswers;
     private string _selectedAnswer;
     private readonly string _studentId;
+    private readonly string _studentName;
     private DateTime _testStartTime;
 
     public ObservableCollection<TestResult> TestResults { get; } = new ObservableCollection<TestResult>();
@@ -28,10 +29,11 @@ public class TestViewModel : BaseViewModel
     public ICommand PreviousQuestionCommand { get; }
     public ICommand FinishTestCommand { get; }
 
-    public TestViewModel(ObservableCollection<Question> questions, string studentId)
+    public TestViewModel(ObservableCollection<Question> questions, string studentId, string studentName)
     {
         _questions = questions;
         _studentId = studentId;
+        _studentName = studentName;
         _testStartTime = DateTime.Now;
 
         CurrentQuestion = _questions[_currentIndex];
@@ -42,13 +44,13 @@ public class TestViewModel : BaseViewModel
 
     private void NextQuestion()
     {
-        SaveAnswer(); // Сохраняем выбранный ответ
+        SaveAnswer();
         _currentIndex++;
 
         if (_currentIndex < _questions.Count)
         {
             CurrentQuestion = _questions[_currentIndex];
-            SelectedAnswer = null; // Сбрасываем выбранный ответ
+            SelectedAnswer = null;
             OnPropertyChanged(nameof(CurrentQuestion));
             OnPropertyChanged(nameof(SelectedAnswer));
         }
@@ -69,11 +71,15 @@ public class TestViewModel : BaseViewModel
 
     private void SaveAnswer()
     {
-        if (CurrentQuestion.CorrectAnswer == SelectedAnswer)
+        if (!string.IsNullOrEmpty(SelectedAnswer))
         {
-            _correctAnswers++;
+            if (SelectedAnswer == CurrentQuestion.CorrectAnswer)
+            {
+                _correctAnswers++;
+            }
         }
     }
+
 
     private void FinishTest()
     {
@@ -84,30 +90,28 @@ public class TestViewModel : BaseViewModel
         string grade = _correctAnswers >= totalQuestions * 0.8 ? "Отлично" :
                        _correctAnswers >= totalQuestions * 0.6 ? "Хорошо" : "Удовлетворительно";
 
-        foreach (var question in _questions)
+        var testResult = new TestResult
         {
-            TestResults.Add(new TestResult
-            {
-                TestId = 1,
-                TestDate = _testStartTime,
-                StudentId = _studentId,
-                QuestionId = question.Id,
-                Answer = SelectedAnswer,
-                DurationMinutes = duration,
-                TotalQuestions = totalQuestions,
-                CorrectAnswers = _correctAnswers,
-                Grade = grade
-            });
-        }
+            TestId = 1,
+            StudentId = _studentId,
+            StudentName = _studentName,
+            TestDate = _testStartTime,
+            TotalQuestions = totalQuestions,
+            CorrectAnswers = _correctAnswers,
+            Grade = grade,
+            DurationMinutes = duration
+        };
 
-        ShowResults();
+        TestResults.Add(testResult);
+
+        ShowResults(testResult);
     }
 
-    private void ShowResults()
+    private void ShowResults(TestResult result)
     {
         var resultsWindow = new TestResultsWindow
         {
-            DataContext = new TestResultsViewModel(TestResults)
+            DataContext = new TestResultsViewModel(new ObservableCollection<TestResult> { result })
         };
         resultsWindow.ShowDialog();
     }

@@ -3,21 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Результаты тестирования" Height="400" Width="600">
     <Grid Margin="10">
-        <TextBlock FontSize="20" FontWeight="Bold" Text="Результаты тестирования" HorizontalAlignment="Center" Margin="0,10"/>
-
-        <ListView ItemsSource="{Binding TestResults}" Margin="10,50,10,50">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="ID Теста" DisplayMemberBinding="{Binding TestId}" Width="80"/>
-                    <GridViewColumn Header="Дата" DisplayMemberBinding="{Binding TestDate}" Width="120"/>
-                    <GridViewColumn Header="ID Вопроса" DisplayMemberBinding="{Binding QuestionId}" Width="80"/>
-                    <GridViewColumn Header="Ответ" DisplayMemberBinding="{Binding Answer}" Width="100"/>
-                    <GridViewColumn Header="Правильных ответов" DisplayMemberBinding="{Binding CorrectAnswers}" Width="120"/>
-                    <GridViewColumn Header="Оценка" DisplayMemberBinding="{Binding Grade}" Width="80"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-
-        <Button Content="Закрыть" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="100" Height="30" Command="{Binding CloseCommand}" Margin="10"/>
+        <StackPanel>
+            <TextBlock Text="Результаты теста" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="{Binding TestResults[0].StudentName}" FontSize="14"/>
+            <TextBlock Text="{Binding TestResults[0].StudentId}" FontSize="14"/>
+            <TextBlock Text="{Binding TestResults[0].TestDate, StringFormat='Дата теста: {0:dd.MM.yyyy HH:mm}'}" FontSize="14"/>
+            <TextBlock Text="{Binding TestResults[0].TotalQuestions, StringFormat='Всего вопросов: {0}'}" FontSize="14"/>
+            <TextBlock Text="{Binding TestResults[0].CorrectAnswers, StringFormat='Правильных ответов: {0}'}" FontSize="14"/>
+            <TextBlock Text="{Binding TestResults[0].Grade, StringFormat='Оценка: {0}'}" FontSize="14"/>
+            <TextBlock Text="{Binding TestResults[0].DurationMinutes, StringFormat='Длительность: {0} минут'}" FontSize="14"/>
+            <Button Content="Закрыть" Command="{Binding CloseCommand}" HorizontalAlignment="Center" Margin="10"/>
+        </StackPanel>
     </Grid>
 </Window>
